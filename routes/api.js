@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
+const { body, validationResult } = require("express-validator");
+const {
+    validateSignup,
+    signup_post
+} = require("../controllers/authController");
 
 router.post("/users", async (req, res) => {
     const {
@@ -52,6 +57,8 @@ router.get("/posts", async (req, res) => {
     } catch(err) {
         res.sendStatus(404).json({ errorMessage: err });
     }
-})
+});
+
+router.post("/sign-up", validateSignup, signup_post);
 
 module.exports = router;

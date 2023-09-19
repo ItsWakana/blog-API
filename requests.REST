@@ -11,3 +11,15 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/users
+
+###
+POST http://localhost:3000/api/sign-up
+Content-Type: application/json
+
+{
+    "firstName": "Ryan",
+    "lastName": "Crocker",
+    "username": "hedjet",
+    "password": "password",
+    "passwordConfirm": "password"
+}
