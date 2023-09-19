@@ -32,7 +32,7 @@ router.get("/users", async (req, res) => {
     try {
 
         const foundUsers = await User.find();
-        if (!foundUsers) {
+        if (foundUsers.length === 0) {
             res.sendStatus(404).json({message: "No users found"});
         } else {
             res.json(foundUsers);
