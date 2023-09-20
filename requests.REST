@@ -20,6 +20,15 @@ Content-Type: application/json
     "firstName": "Ryan",
     "lastName": "Crocker",
     "username": "hedjet",
-    "password": "password",
-    "passwordConfirm": "password"
+    "password": "Cricket12345",
+    "passwordConfirm": "Cricket12345"
+}
+
+###
+POST http://localhost:3000/api/sign-in
+Content-Type: application/json
+
+{
+    "username": "hedjet",
+    "password": "Cricket12345"
 }
