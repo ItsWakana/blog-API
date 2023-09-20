@@ -65,9 +65,9 @@ router.post("/sign-up", validateSignup, signup_post);
 
 router.post("/sign-in", passport.authenticate("local", { session: false }), async (req, res) => {
     const { user } = req;
-    
+
     try {
-        const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: '120' });
+        const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } catch(err) {
         res.sendStatus(403).json({ errorMessage: err });
