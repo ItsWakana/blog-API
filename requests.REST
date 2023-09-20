@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/users
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1MGFkMTJjOTJkNzc3YWQ1ODU0ZGVjNSIsIm5hbWUiOiJSeWFuIENyb2NrZXIiLCJ1c2VybmFtZSI6ImhlZGpldCIsInBhc3N3b3JkIjoiJDJhJDEwJHIydUdvTFl0T1hRQWtocHc1RHd3YmVwdmZ6VjBrVG9VcWZyeC9uL1R6bmRUdmkxcm4uN1MyIiwiaXNBZG1pbiI6ZmFsc2UsIl9fdiI6MH0sImlhdCI6MTY5NTI0ODAzNX0.lbXXXzebioFofDKJn7inzxlgN7aMcNaptFz5ce7wYbY
 ###
 POST http://localhost:3000/api/sign-up
 Content-Type: application/json

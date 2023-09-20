@@ -9,6 +9,7 @@ const {
 } = require("../controllers/authController");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 router.post("/users", async (req, res) => {
     const {
@@ -37,14 +38,14 @@ router.post("/users", async (req, res) => {
 router.get("/users", verifyToken, async (req, res) => {
 
     try {
+        const authData = jwt.verify(req.token, process.env.TOKEN_SECRET);
         const foundUsers = await User.find();
         if (foundUsers.length === 0) {
-            res.sendStatus(404).json({message: "No users found"});
-        } else {
-            res.json(foundUsers);
+            return res.sendStatus(404).json({ message: "No users found" });
         }
+        res.json(foundUsers);
     } catch(err) {
-        res.sendStatus(404).json({errorMessage: err});
+        res.sendStatus(403).json({ errorMessage: err });
     }
 });
 
@@ -64,23 +65,24 @@ router.post("/sign-up", validateSignup, signup_post);
 
 router.post("/sign-in", passport.authenticate("local", { session: false }), async (req, res) => {
     const { user } = req;
+    
+    try {
+        const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: '120' });
+        res.json({ token });
+    } catch(err) {
+        res.sendStatus(403).json({ errorMessage: err });
+    }
 
-        jwt.sign({ user }, process.env.TOKEN_SECRET, (err, token) => {
-            if (err) {
-                return res.sendStatus(400).json({ errorMessage: err });
-            }
-
-            res.json({ token });
-        });
 })
 
 function verifyToken(req, res, next) {
-    res.json(req.headers);
     const bearerHeader = req.headers["authorization"];
 
-
     if (typeof bearerHeader !== "undefined") {
+        const token = bearerHeader.split(' ')[1];
 
+        req.token = token;
+        next();
     } else {
         res.sendStatus(403);
     }
