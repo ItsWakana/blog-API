@@ -25,6 +25,10 @@ const PostSchema = mongoose.Schema({
     editedAt: {
         type: Date,
         required: true
+    },
+    published: {
+        date: { type: Date },
+        isPublished: { type: Boolean, required: true }
     }
 });
 

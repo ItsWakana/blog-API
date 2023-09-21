@@ -7,6 +7,7 @@ const {
     validateSignup,
     signup_post
 } = require("../controllers/authController");
+const { blogPost_post, validateBlogPost } = require("../controllers/postController");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -38,14 +39,13 @@ router.post("/users", async (req, res) => {
 router.get("/users", verifyToken, async (req, res) => {
 
     try {
-        const authData = jwt.verify(req.token, process.env.TOKEN_SECRET);
         const foundUsers = await User.find();
         if (foundUsers.length === 0) {
-            return res.sendStatus(404).json({ message: "No users found" });
+            res.status(404).json({ message: "No users found" });
         }
         res.json(foundUsers);
     } catch(err) {
-        res.sendStatus(403).json({ errorMessage: err });
+        res.status(403).json({ errorMessage: err });
     }
 });
 
@@ -57,9 +57,11 @@ router.get("/posts", async (req, res) => {
         const foundPosts = await Post.find();
 
     } catch(err) {
-        res.sendStatus(404).json({ errorMessage: err });
+        res.status(404).json({ errorMessage: err });
     }
 });
+
+router.post("/posts", verifyToken, validateBlogPost, blogPost_post);
 
 router.post("/sign-up", validateSignup, signup_post);
 
@@ -70,7 +72,7 @@ router.post("/sign-in", passport.authenticate("local", { session: false }), asyn
         const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } catch(err) {
-        res.sendStatus(403).json({ errorMessage: err });
+        res.status(403).json({ errorMessage: err });
     }
 
 })
@@ -81,7 +83,10 @@ function verifyToken(req, res, next) {
     if (typeof bearerHeader !== "undefined") {
         const token = bearerHeader.split(' ')[1];
 
-        req.token = token;
+        jwt.verify(token, process.env.TOKEN_SECRET, (err, token) => {
+            if (err) return res.status(403).json({ errorMessage: err });
+            req.user = token;
+        })
         next();
     } else {
         res.sendStatus(403);

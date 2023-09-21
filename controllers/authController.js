@@ -3,7 +3,9 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const passport = require("passport");
+const Post = require("../models/Post");
 const LocalStrategy = require("passport-local").Strategy;
+const jwt = require("jsonwebtoken");
 
 const validateSignup = [
     body("firstName", "first name cannot be empty")
@@ -27,6 +29,7 @@ body("passwordConfirm", "passwords do not match")
         return value === req.body.password;
     })
 ];
+
 
 const signup_post = async (req, res) => {
     const { 
