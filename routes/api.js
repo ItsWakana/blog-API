@@ -11,6 +11,9 @@ const { blogPost_post, validateBlogPost } = require("../controllers/postControll
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const cors = require("cors");
+
+router.use(cors());
 
 router.post("/users", async (req, res) => {
     const {
