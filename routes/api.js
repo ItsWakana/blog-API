@@ -5,7 +5,8 @@ const Post = require("../models/Post");
 const { body, validationResult } = require("express-validator");
 const {
     validateSignup,
-    signup_post
+    signup_post,
+    authMe_post
 } = require("../controllers/authController");
 const { blogPost_post, validateBlogPost } = require("../controllers/postController");
 const passport = require("passport");
@@ -44,7 +45,7 @@ router.get("/users", verifyToken, async (req, res) => {
     try {
         const foundUsers = await User.find();
         if (foundUsers.length === 0) {
-            res.status(404).json({ message: "No users found" });
+            return res.status(404).json({ message: "No users found" });
         }
         res.json(foundUsers);
     } catch(err) {
@@ -78,8 +79,10 @@ router.post("/sign-in", passport.authenticate("local", { session: false }), asyn
     } catch(err) {
         res.status(403).json({ errorMessage: err });
     }
+});
 
-})
+router.post("/me", verifyToken, authMe_post);
+
 
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers["authorization"];
@@ -90,8 +93,8 @@ function verifyToken(req, res, next) {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, token) => {
             if (err) return res.status(403).json({ errorMessage: err });
             req.user = token;
+            next();
         })
-        next();
     } else {
         res.sendStatus(403);
     }

@@ -89,9 +89,15 @@ const signinAuthStrategy = new LocalStrategy(
     }
 )
 
+const authMe_post = async (req, res) => {
+
+    res.json(req.user);
+}
+
 module.exports = {
     validateSignup,
     signup_post,
-    signinAuthStrategy
+    signinAuthStrategy,
+    authMe_post
 }
 
