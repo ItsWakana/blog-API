@@ -13,6 +13,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 router.use(cors());
 
@@ -65,6 +66,23 @@ router.get("/posts", async (req, res) => {
         res.status(404).json({ errorMessage: err });
     }
 });
+
+router.get("/posts/:postId", async (req, res) => {
+
+    const { postId } = req.params;
+
+    if (!mongoose.isValidObjectId()) {
+        return res.status(400).json({ errorMessage: "Invalid ID" });
+    }
+
+    try {
+        const foundBlogPost = await Post.findById(postId);
+
+        res.json(foundBlogPost);
+    } catch(error) {
+        res.status(404).json({ errorMessage: error });
+    }
+})
 
 router.post("/posts", verifyToken, validateBlogPost, blogPost_post);
 
