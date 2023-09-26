@@ -71,7 +71,7 @@ router.get("/posts/:postId", async (req, res) => {
 
     const { postId } = req.params;
 
-    if (!mongoose.isValidObjectId()) {
+    if (!mongoose.isValidObjectId(postId)) {
         return res.status(400).json({ errorMessage: "Invalid ID" });
     }
 
