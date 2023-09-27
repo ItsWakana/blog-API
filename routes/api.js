@@ -17,7 +17,7 @@ const mongoose = require("mongoose");
 
 const corsOptions = {
     origin: 'http://localhost:5173',
-    // credentials: true
+    credentials: true
 }
 
 router.use(cors(corsOptions));
@@ -101,12 +101,19 @@ router.post("/sign-in", passport.authenticate("local", { session: false }), asyn
 
         // res.cookie("token", token, {
         //     httpOnly: true,
-        //     path: '/'
+        //     path: '/',
+        //     expires: new Date(Date.now() + 10 * 60 * 1000)
         // });
         res.json({ token });
     } catch(err) {
         res.status(403).json({ errorMessage: err });
     }
+});
+
+router.post("/sign-out", (req, res) => {
+    res.clearCookie("token", {
+        path: "/"
+    });
 });
 
 router.post("/me", verifyToken, authMe_post);
