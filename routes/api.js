@@ -17,7 +17,7 @@ const mongoose = require("mongoose");
 
 const corsOptions = {
     origin: 'http://localhost:5173',
-    credentials: true
+    // credentials: true
 }
 
 router.use(cors(corsOptions));
@@ -99,10 +99,10 @@ router.post("/sign-in", passport.authenticate("local", { session: false }), asyn
     try {
         const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: '15m' });
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            path: '/'
-        });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     path: '/'
+        // });
         res.json({ token });
     } catch(err) {
         res.status(403).json({ errorMessage: err });
