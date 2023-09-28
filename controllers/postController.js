@@ -80,7 +80,7 @@ const blogPostComment_post = async (req, res) => {
 
     //FIND THE BLOGPOST BY ITS ID AND UPDATE THE COMMENTS FIELD IN THE BLOGDATA BY PUSHING THE COMMENT ID INTO IT.
 
-    res.json({foundPost});
+    res.json({newComment});
 
 }
 
