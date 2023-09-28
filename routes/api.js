@@ -8,7 +8,12 @@ const {
     signup_post,
     authMe_post
 } = require("../controllers/authController");
-const { blogPost_post, validateBlogPost } = require("../controllers/postController");
+const { 
+    blogPost_post, 
+    blogPostComment_post,
+    validateBlogPost,
+    validateBlogPostComment
+} = require("../controllers/postController");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -64,7 +69,7 @@ router.get("/users", verifyToken, async (req, res) => {
 router.get("/posts", async (req, res) => {
 
     try {
-        const foundPosts = await Post.find();
+        const foundPosts = await Post.find().populate("comments");
 
         res.json(foundPosts);
     } catch(err) {
@@ -81,7 +86,16 @@ router.get("/posts/:postId", async (req, res) => {
     }
 
     try {
-        const foundBlogPost = await Post.findById(postId);
+        // const foundBlogPost = await Post.findById(postId).populate("comments");
+        const foundBlogPost = await Post.findById(postId)
+            .populate({
+                path: "comments",
+                populate: {
+                path: "author", 
+                model: "User"
+                },
+            })
+  .exec();
 
         res.json(foundBlogPost);
     } catch(error) {
@@ -90,6 +104,8 @@ router.get("/posts/:postId", async (req, res) => {
 })
 
 router.post("/posts", verifyToken, validateBlogPost, blogPost_post);
+
+router.post("/posts/:postId/comments", verifyToken, validateBlogPostComment, blogPostComment_post);
 
 router.post("/sign-up", validateSignup, signup_post);
 
@@ -131,7 +147,7 @@ function verifyToken(req, res, next) {
             next();
         });
     } else {
-        res.sendStatus(403);
+        res.status(403).json({errorMessage: "Invalid authorization"});
     }
 
     // const token = req.cookies.token;

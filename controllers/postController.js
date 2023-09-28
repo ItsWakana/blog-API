@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 
 const validateBlogPost = [
     body("title")
@@ -7,6 +8,13 @@ const validateBlogPost = [
         .not()
         .isEmpty(),
     body("postContent")
+        .trim()
+        .not()
+        .isEmpty()
+];
+
+const validateBlogPostComment = [
+    body("comment")
         .trim()
         .not()
         .isEmpty()
@@ -46,7 +54,39 @@ const blogPost_post = async (req, res) => {
     res.json(newPost);
 }
 
+const blogPostComment_post = async (req, res) => {
+
+    const { user } = req.user;
+
+    const { comment, blogData } = req.body;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    const newComment = new Comment({
+        content: comment,
+        createdAt: new Date(),
+        author: user._id
+    });
+
+    //SAVE COMMENT TO DATABASE.
+    await newComment.save();
+
+    const foundPost = await Post.findByIdAndUpdate(blogData._id, { $push: { comments: newComment._id }});
+
+
+    //FIND THE BLOGPOST BY ITS ID AND UPDATE THE COMMENTS FIELD IN THE BLOGDATA BY PUSHING THE COMMENT ID INTO IT.
+
+    res.json({foundPost});
+
+}
+
 module.exports = {
     blogPost_post,
-    validateBlogPost
+    blogPostComment_post,
+    validateBlogPost,
+    validateBlogPostComment
 }
