@@ -75,12 +75,11 @@ const blogPostComment_post = async (req, res) => {
     //SAVE COMMENT TO DATABASE.
     await newComment.save();
 
-    const foundPost = await Post.findByIdAndUpdate(blogData._id, { $push: { comments: newComment._id }});
+    await Post.findByIdAndUpdate(blogData._id, { $push: { comments: newComment._id }});
 
-
-    //FIND THE BLOGPOST BY ITS ID AND UPDATE THE COMMENTS FIELD IN THE BLOGDATA BY PUSHING THE COMMENT ID INTO IT.
-
-    res.json({newComment});
+    const populatedComment = await Comment.findById(newComment._id).populate("author").exec();
+    
+    res.json(populatedComment);
 
 }
 
