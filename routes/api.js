@@ -95,7 +95,7 @@ router.get("/posts/:postId", async (req, res) => {
                 model: "User"
                 },
             })
-  .exec();
+        .exec();
 
         res.json(foundBlogPost);
     } catch(error) {
