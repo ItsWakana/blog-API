@@ -118,7 +118,7 @@ router.put("/posts/:postId", verifyToken, async (req, res) => {
 
     try {
 
-        await Post.findOneAndUpdate({_id: postId}, {title, content, isPublished});
+        await Post.findOneAndUpdate({_id: postId}, {title, content, published: { isPublished }});
         res.json(req.body);
     } catch(error) {
         res.status(404).json({ errorMessage: error });
