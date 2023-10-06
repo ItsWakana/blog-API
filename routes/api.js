@@ -86,7 +86,6 @@ router.get("/posts/:postId", async (req, res) => {
     }
 
     try {
-        // const foundBlogPost = await Post.findById(postId).populate("comments");
         const foundBlogPost = await Post.findById(postId)
             .populate({
                 path: "comments",
@@ -101,7 +100,33 @@ router.get("/posts/:postId", async (req, res) => {
     } catch(error) {
         res.status(404).json({ errorMessage: error });
     }
+});
+
+router.put("/posts/:postId", verifyToken, async (req, res) => {
+
+    const { postId } = req.params;
+
+    const {
+        title,
+        content,
+        isPublished
+    } = req.body;
+
+    if (!mongoose.isValidObjectId(postId)) {
+        return res.status(400).json({ errorMessage: "Invalid ID" });
+    }
+
+    try {
+
+        await Post.findOneAndUpdate({_id: postId}, {title, content, isPublished});
+        res.json(req.body);
+    } catch(error) {
+        res.status(404).json({ errorMessage: error });
+    }
+
+
 })
+
 
 router.post("/posts", verifyToken, validateBlogPost, blogPost_post);
 
