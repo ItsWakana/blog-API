@@ -102,6 +102,24 @@ router.get("/posts/:postId", async (req, res) => {
     }
 });
 
+router.delete("/posts/:postId", verifyToken, async (req, res) => {
+
+    const { postId } = req.params;
+
+    if (!mongoose.isValidObjectId(postId)) {
+        return res.status(400).json({ errorMessage: "Invalid ID" });
+    }
+
+    try {
+
+        await Post.findByIdAndDelete(postId);
+        res.status(200).json({ message: "Post deleted successfully"});
+    } catch(error) {
+        res.status(404).json({ errorMessage: error });
+    }
+
+});
+
 router.put("/posts/:postId", verifyToken, async (req, res) => {
 
     const { postId } = req.params;
