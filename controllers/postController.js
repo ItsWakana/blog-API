@@ -7,7 +7,7 @@ const validateBlogPost = [
         .trim()
         .not()
         .isEmpty(),
-    body("postContent")
+    body("content")
         .trim()
         .not()
         .isEmpty()
@@ -30,7 +30,7 @@ const blogPost_post = async (req, res) => {
 
     const {
         title,
-        postContent
+        content
     } = req.body;
 
     const errors = validationResult(req);
@@ -41,7 +41,7 @@ const blogPost_post = async (req, res) => {
 
     const newPost = new Post({
         title,
-        content: postContent,
+        content: content,
         author: user._id,
         createdAt: new Date(),
         editedAt: new Date(),
